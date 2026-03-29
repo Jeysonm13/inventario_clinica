@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="POST">
+    <input name="nombre" value="{{medicamento.nombre}}" class="form-control"><br>
+    <input name="categoria" value="{{medicamento.categoria}}" class="form-control"><br>
+    <input name="cantidad" value="{{medicamento.cantidad}}" class="form-control"><br>
+    <input name="precio" value="{{medicamento.precio}}" class="form-control"><br>
+
+    <button class="btn btn-warning">Actualizar</button>
+</form>
+
+{% endblock %}

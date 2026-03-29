@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="POST">
+    <input name="nombre" class="form-control" placeholder="Nombre"><br>
+    <input name="categoria" class="form-control" placeholder="Categoría"><br>
+    <input name="cantidad" type="number" class="form-control"><br>
+    <input name="precio" type="number" step="0.01" class="form-control"><br>
+
+    <button class="btn btn-success">Guardar</button>
+</form>
+
+{% endblock %}
