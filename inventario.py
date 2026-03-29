@@ -1,5 +1,5 @@
 from medicamento import Medicamento
-from database import Database
+from conexion import Database
 
 class InventarioClinica:
     def __init__(self):
