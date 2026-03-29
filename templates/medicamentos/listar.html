@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="/crear" class="btn btn-primary">Nuevo</a>
+
+<table class="table mt-3">
+<tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Categoría</th>
+    <th>Cantidad</th>
+    <th>Precio</th>
+    <th>Acciones</th>
+</tr>
+
+{% for m in medicamentos %}
+<tr>
+    <td>{{m.id}}</td>
+    <td>{{m.nombre}}</td>
+    <td>{{m.categoria}}</td>
+    <td>{{m.cantidad}}</td>
+    <td>{{m.precio}}</td>
+    <td>
+        <a href="/editar/{{m.id}}" class="btn btn-warning">Editar</a>
+        <a href="/eliminar/{{m.id}}" class="btn btn-danger">Eliminar</a>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

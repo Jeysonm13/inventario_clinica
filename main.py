@@ -1,33 +1,64 @@
-from inventario import InventarioClinica
-from medicamento import Medicamento
+from flask import Flask, render_template, request, redirect, url_for
+from services.medicamento_service import *
+from forms.medicamento_form import MedicamentoForm
 
-inventario = InventarioClinica()
+app = Flask(__name__)
 
-while True:
-    print("""
-    ===== INVENTARIO CLÍNICA =====
-    1. Agregar medicamento
-    2. Eliminar medicamento
-    3. Mostrar inventario
-    4. Salir
-    """)
+# LISTAR
+@app.route('/')
+def listar():
+    medicamentos = obtener_medicamentos()
+    return render_template('medicamentos/listar.html', medicamentos=medicamentos)
 
-    opcion = input("Opción: ")
 
-    if opcion == "1":
-        id_ = int(input("ID: "))
-        nombre = input("Nombre: ")
-        categoria = input("Categoría: ")
-        cantidad = int(input("Cantidad: "))
-        precio = float(input("Precio: "))
-        inventario.agregar(Medicamento(id_, nombre, categoria, cantidad, precio))
+# CREAR
+@app.route('/crear', methods=['GET', 'POST'])
+def crear():
+    if request.method == 'POST':
+        form = MedicamentoForm(request.form)
+        insertar_medicamento(form.nombre, form.categoria, form.cantidad, form.precio)
+        return redirect(url_for('listar'))
+    return render_template('medicamentos/crear.html')
 
-    elif opcion == "2":
-        id_ = int(input("ID a eliminar: "))
-        inventario.eliminar(id_)
 
-    elif opcion == "3":
-        inventario.mostrar()
+# EDITAR
+@app.route('/editar/<int:id>', methods=['GET', 'POST'])
+def editar(id):
+    medicamento = obtener_medicamento(id)
 
-    elif opcion == "4":
-        break
+    if request.method == 'POST':
+        form = MedicamentoForm(request.form)
+        actualizar_medicamento(id, form.nombre, form.categoria, form.cantidad, form.precio)
+        return redirect(url_for('listar'))
+
+    return render_template('medicamentos/editar.html', medicamento=medicamento)
+
+
+# ELIMINAR
+@app.route('/eliminar/<int:id>')
+def eliminar(id):
+    eliminar_medicamento(id)
+    return redirect(url_for('listar'))
+
+
+# PDF
+from reportlab.platypus import SimpleDocTemplate, Table
+
+@app.route('/reporte')
+def reporte():
+    medicamentos = obtener_medicamentos()
+
+    data = [["ID", "Nombre", "Categoría", "Cantidad", "Precio"]]
+
+    for m in medicamentos:
+        data.append([m['id'], m['nombre'], m['categoria'], m['cantidad'], m['precio']])
+
+    pdf = SimpleDocTemplate("reporte_medicamentos.pdf")
+    tabla = Table(data)
+    pdf.build([tabla])
+
+    return "Reporte generado"
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
